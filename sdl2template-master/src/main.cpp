@@ -90,6 +90,7 @@ void handleInput()
 						done = true;
 						break;
 
+					// Press the 't' key to start playing music
 					case SDLK_t:
 						if (Mix_PlayingMusic() == 0)
 						{
@@ -97,6 +98,7 @@ void handleInput()
 						}
 						break;
 
+					// Press the 'y' to pause the music (if already playing) and resume music (is currently paused)
                     case SDLK_y:
 						if (Mix_PlayingMusic() == 1)
 						{
@@ -114,23 +116,27 @@ void handleInput()
 						break;
 
 
+					// Press the 'b' key to play the sound effect of the 'gHigh' chunk
 					case SDLK_b:
 						Mix_PlayChannel(-1, gHigh, -1);
 						break;
 
-
+					// Press the 'n' key to change the volume of the 'gHigh' chunck to be 12
 					case SDLK_n:
 						Mix_VolumeChunk(gHigh, 12);
 						break;
 
+					// Press the 'm' key to change the volume of the 'gHigh' chunck to be 128
 					case SDLK_m:
 						Mix_VolumeChunk(gHigh, 128);
 						break;
 
+					// Press the 'f' key to play the 'gHigh' chunk on repeat with a fade in of 1500 ms
 					case SDLK_f:
 						Mix_FadeInChannel(-1, gHigh, -1, 1500);
 						break;
 
+					// Press the 'd' key to fade out the next occupied channel over 1500 ms
 					case SDLK_d:
 						Mix_FadeOutChannel(-1, 1500);
 						break;
