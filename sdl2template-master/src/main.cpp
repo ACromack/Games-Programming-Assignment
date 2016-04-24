@@ -19,6 +19,8 @@
 #include <chrono>
 typedef std::chrono::high_resolution_clock Clock;
 
+#include "audio.h"
+#include "sprite.h"
 
 std::string exeName;
 SDL_Window *win; //pointer to the SDL_Window
@@ -141,6 +143,12 @@ void handleInput()
 						Mix_FadeOutChannel(-1, 1500);
 						break;
 
+
+					// Testing for different classes
+					case SDLK_r:
+						Audio();
+						spriteClass();
+						break;
 
 				}
 			break;
@@ -276,7 +284,7 @@ int main( int argc, char* args[] )
 	gHigh = Mix_LoadWAV("./assets/musicSFX/high.wav");
 	if(!gHigh)
 	{
-		printf("Loadig the High wav has failed");
+		printf("Loading the High wav has failed");
 		//ERROR
 	}
 
