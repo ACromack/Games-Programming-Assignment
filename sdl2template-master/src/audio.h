@@ -19,7 +19,7 @@ class Audio
 	public: 
 		Audio();
 
-		//void playSound(Mix_Chunk);
+		void playSound(Mix_Chunk *playedSound);
 
 		~Audio();
 

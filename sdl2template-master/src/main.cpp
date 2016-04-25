@@ -147,6 +147,8 @@ void handleInput()
 					// Testing for different classes
 					case SDLK_r:
 						Audio();
+						Audio audTest;
+						audTest.playSound(gHigh);
 						spriteClass();
 						break;
 
