@@ -31,11 +31,17 @@ SDL_Surface *messageSurface; //pointer to the SDL_Surface for message
 SDL_Texture *messageTexture; //pointer to the SDL_Texture for message
 SDL_Rect message_rect; //SDL_rect for the message
 
-//SDL_Surface *messageSurface2; //pointer to the SDL_Surface for message2
-//SDL_Texture *messageTexture2; //pointer to the SDL_Texture for message2
-//SDL_Rect message_rect2; //SDL_rect for the message2
+SDL_Surface *messageSurface2; //pointer to the SDL_Surface for message2 (Play Game)
+SDL_Texture *messageTexture2; //pointer to the SDL_Texture for message2 (Play Game)
+SDL_Rect message_rect2; //SDL_rect for the message2 (Play Game)
 
-std::string outputText = "SDL_Mixer Test";
+SDL_Surface *messageSurface3; //pointer to the SDL_Surface for message3 (Options)
+SDL_Texture *messageTexture3; //pointer to the SDL_Texture for message3 (Options)
+SDL_Rect message_rect3; //SDL_rect for the message3 (Options)
+
+std::string outputText = "Chuckie Egg";
+std::string outputText2 = "Play Game";
+std::string outputText3 = "Options";
 
 
 unsigned int lastTime = 0, currentTime;
@@ -182,12 +188,36 @@ void render()
 		//Draw the text
 		SDL_RenderCopy(ren, messageTexture, NULL, &message_rect);
 
-		//Draw the second set of text
-		//SDL_RenderCopy(ren, messageTexture2, NULL, &message_rect2);
+		messageTexture2 = SDL_CreateTextureFromSurface(ren, messageSurface2);
+		message_rect2.x = 0;
+		message_rect2.y = 300;
+		message_rect2.w = 300 + stretchVAR;
+		message_rect2.h = 150;
+
+		//Draw the text
+		SDL_RenderCopy(ren, messageTexture2, NULL, &message_rect2);
+
+
+		//Draw the text
+		SDL_RenderCopy(ren, messageTexture3, NULL, &message_rect3);
+
+		messageTexture3 = SDL_CreateTextureFromSurface(ren, messageSurface3);
+		message_rect3.x = 0;
+		message_rect3.y = 500;
+		message_rect3.w = 300 + stretchVAR;
+		message_rect3.h = 150;
+
+		//Draw the text
+		SDL_RenderCopy(ren, messageTexture2, NULL, &message_rect2);
+
 
 		//Update the screen
 		SDL_RenderPresent(ren);
 }
+
+
+
+
 
 void cleanExit(int returnValue)
 {
@@ -261,11 +291,8 @@ int main( int argc, char* args[] )
 	}
 	SDL_Color White = {255, 255, 255};
 	messageSurface = TTF_RenderText_Solid(sans, outputText.c_str(), White);
-	//messageTexture = SDL_CreateTextureFromSurface(ren, messageSurface);
-	//message_rect.x = 0;
-	//message_rect.y = 0;
-	//message_rect.w = 600 + stretchVAR;
-	//message_rect.h = 200;
+	messageSurface2 = TTF_RenderText_Solid(sans, outputText2.c_str(), White);
+	messageSurface3 = TTF_RenderText_Solid(sans, outputText3.c_str(), White);
 
 
 
@@ -305,6 +332,8 @@ int main( int argc, char* args[] )
 		//auto t1 = Clock::now();
 
 		render(); // this should render the world state according to VARIABLES
+
+		//render2();
 
 		//lastTime = SDL_GetTicks();
 		//auto t2 = Clock::now();

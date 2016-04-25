@@ -8,13 +8,19 @@
 class spriteClass
 {
 private:
-	int testValue = 23;
+	int spriteFrame = 0;
+	int spriteX = 0;
+	int spriteY = 0;
+	int yCoord = 150;
+	int xCoord = 150;
+
+	SDL_Renderer *ren;
+	SDL_Texture *tex;
 
 
 public:
 	spriteClass();
 
-	//void playSound(Mix_Chunk);
 
 	~spriteClass();
 
