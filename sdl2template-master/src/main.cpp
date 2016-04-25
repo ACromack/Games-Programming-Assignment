@@ -32,17 +32,20 @@ SDL_Texture *messageTexture; //pointer to the SDL_Texture for message
 SDL_Rect message_rect; //SDL_rect for the message
 
 SDL_Surface *messageSurface2; //pointer to the SDL_Surface for message2 (Play Game)
+SDL_Surface *messageSurface2Select; //pointer to the SDL_Surface for message2 (Play Game) when it is selected
 SDL_Texture *messageTexture2; //pointer to the SDL_Texture for message2 (Play Game)
 SDL_Rect message_rect2; //SDL_rect for the message2 (Play Game)
 
 SDL_Surface *messageSurface3; //pointer to the SDL_Surface for message3 (Options)
+SDL_Surface *messageSurface3Select; //pointer to the SDL_Surface for message3 (Options) when it is selected
 SDL_Texture *messageTexture3; //pointer to the SDL_Texture for message3 (Options)
 SDL_Rect message_rect3; //SDL_rect for the message3 (Options)
 
-std::string outputText = "Chuckie Egg";
-std::string outputText2 = "Play Game";
-std::string outputText3 = "Options";
+std::string outputText = "Chuckie Egg"; //Output string for the title
+std::string outputText2 = "Play Game"; //Ouput string for the 'Play Game' menu option
+std::string outputText3 = "Options"; //Ouput string for the 'Options' menu option
 
+int menuItemSelect = 0;
 
 unsigned int lastTime = 0, currentTime;
 int stretchVAR = 200;
@@ -98,6 +101,10 @@ void handleInput()
 						done = true;
 						break;
 
+
+					/* Start of code for handling user input and testing audio stuff
+
+
 					// Press the 't' key to start playing music
 					case SDLK_t:
 						if (Mix_PlayingMusic() == 0)
@@ -149,6 +156,17 @@ void handleInput()
 						Mix_FadeOutChannel(-1, 1500);
 						break;
 
+					End of code regarding user input and audio stuff */ 
+
+
+					case SDLK_s:
+						menuItemSelect = 1;
+						break;
+
+					case SDLK_w:
+						menuItemSelect = 0;
+						break;
+
 
 					// Testing for different classes
 					case SDLK_r:
@@ -179,6 +197,8 @@ void render()
 		//Draw the texture
 		SDL_RenderCopy(ren, tex, NULL, NULL);
 
+		// Rendering stuff for message 1 (Chuckie Egg)
+
 		messageTexture = SDL_CreateTextureFromSurface(ren, messageSurface);
 		message_rect.x = 0;
 		message_rect.y = 0;
@@ -188,7 +208,17 @@ void render()
 		//Draw the text
 		SDL_RenderCopy(ren, messageTexture, NULL, &message_rect);
 
-		messageTexture2 = SDL_CreateTextureFromSurface(ren, messageSurface2);
+
+		// Rendering stuff for message 2 (Play Game)
+
+		if (menuItemSelect == 0)
+		{
+			messageTexture2 = SDL_CreateTextureFromSurface(ren, messageSurface2Select);
+		}
+		else
+		{
+			messageTexture2 = SDL_CreateTextureFromSurface(ren, messageSurface2);
+		}
 		message_rect2.x = 0;
 		message_rect2.y = 300;
 		message_rect2.w = 300 + stretchVAR;
@@ -198,17 +228,24 @@ void render()
 		SDL_RenderCopy(ren, messageTexture2, NULL, &message_rect2);
 
 
-		//Draw the text
-		SDL_RenderCopy(ren, messageTexture3, NULL, &message_rect3);
+		// Rendering stuff for message 3 (Options)
 
-		messageTexture3 = SDL_CreateTextureFromSurface(ren, messageSurface3);
+
+		if (menuItemSelect == 1)
+		{
+			messageTexture3 = SDL_CreateTextureFromSurface(ren, messageSurface3Select);
+		}
+		else
+		{
+			messageTexture3 = SDL_CreateTextureFromSurface(ren, messageSurface3);
+		}
 		message_rect3.x = 0;
 		message_rect3.y = 500;
 		message_rect3.w = 300 + stretchVAR;
 		message_rect3.h = 150;
 
 		//Draw the text
-		SDL_RenderCopy(ren, messageTexture2, NULL, &message_rect2);
+		SDL_RenderCopy(ren, messageTexture3, NULL, &message_rect3);
 
 
 		//Update the screen
@@ -290,10 +327,12 @@ int main( int argc, char* args[] )
 		cleanExit(1);
 	}
 	SDL_Color White = {255, 255, 255};
+	SDL_Color Yellow = { 255, 255, 0 };
 	messageSurface = TTF_RenderText_Solid(sans, outputText.c_str(), White);
 	messageSurface2 = TTF_RenderText_Solid(sans, outputText2.c_str(), White);
+	messageSurface2Select = TTF_RenderText_Solid(sans, outputText2.c_str(), Yellow); // Surface for when the 'Play Game' option is selected in the menu
 	messageSurface3 = TTF_RenderText_Solid(sans, outputText3.c_str(), White);
-
+	messageSurface3Select = TTF_RenderText_Solid(sans, outputText3.c_str(), Yellow); // Surface for when the 'Options' option is selected in the menu
 
 
 	// error handling for audio
@@ -323,8 +362,6 @@ int main( int argc, char* args[] )
 	while (!done) //loop until done flag is set)
 	{
 		handleInput(); // this should ONLY SET VARIABLES
-
-		//messageSurface = TTF_RenderText_Solid(sans, outputText.c_str(), White);
 
 		updateSimulation(); // this should ONLY SET VARIABLES according to simulation
 
