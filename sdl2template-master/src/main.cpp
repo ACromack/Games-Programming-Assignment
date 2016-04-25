@@ -45,7 +45,8 @@ std::string outputText = "Chuckie Egg"; //Output string for the title
 std::string outputText2 = "Play Game"; //Ouput string for the 'Play Game' menu option
 std::string outputText3 = "Options"; //Ouput string for the 'Options' menu option
 
-int menuItemSelect = 0;
+int menuItemSelect = 1; // 1 == Play Game, 2 == Options
+int gameSceneSelect = 0; // 0 == Main Menu, 1 == Play Game, 2 == Options
 
 unsigned int lastTime = 0, currentTime;
 int stretchVAR = 200;
@@ -160,11 +161,16 @@ void handleInput()
 
 
 					case SDLK_s:
-						menuItemSelect = 1;
+						menuItemSelect = 2;
 						break;
 
 					case SDLK_w:
-						menuItemSelect = 0;
+						menuItemSelect = 1;
+						break;
+
+
+					case SDLK_RETURN:
+						gameSceneSelect = menuItemSelect;
 						break;
 
 
@@ -197,55 +203,75 @@ void render()
 		//Draw the texture
 		SDL_RenderCopy(ren, tex, NULL, NULL);
 
-		// Rendering stuff for message 1 (Chuckie Egg)
-
-		messageTexture = SDL_CreateTextureFromSurface(ren, messageSurface);
-		message_rect.x = 0;
-		message_rect.y = 0;
-		message_rect.w = 600 + stretchVAR;
-		message_rect.h = 200;
-
-		//Draw the text
-		SDL_RenderCopy(ren, messageTexture, NULL, &message_rect);
-
-
-		// Rendering stuff for message 2 (Play Game)
-
-		if (menuItemSelect == 0)
+		switch (gameSceneSelect)
 		{
-			messageTexture2 = SDL_CreateTextureFromSurface(ren, messageSurface2Select);
-		}
-		else
+		case 0:
 		{
-			messageTexture2 = SDL_CreateTextureFromSurface(ren, messageSurface2);
+			// Rendering stuff for message 1 (Chuckie Egg)
+
+			messageTexture = SDL_CreateTextureFromSurface(ren, messageSurface);
+			message_rect.x = 0;
+			message_rect.y = 0;
+			message_rect.w = 600 + stretchVAR;
+			message_rect.h = 200;
+
+			//Draw the text
+			SDL_RenderCopy(ren, messageTexture, NULL, &message_rect);
+
+
+			// Rendering stuff for message 2 (Play Game)
+
+			if (menuItemSelect == 1)
+			{
+				messageTexture2 = SDL_CreateTextureFromSurface(ren, messageSurface2Select);
+			}
+			else
+			{
+				messageTexture2 = SDL_CreateTextureFromSurface(ren, messageSurface2);
+			}
+			message_rect2.x = 0;
+			message_rect2.y = 300;
+			message_rect2.w = 300 + stretchVAR;
+			message_rect2.h = 150;
+
+			//Draw the text
+			SDL_RenderCopy(ren, messageTexture2, NULL, &message_rect2);
+
+
+			// Rendering stuff for message 3 (Options)
+
+
+			if (menuItemSelect == 2)
+			{
+				messageTexture3 = SDL_CreateTextureFromSurface(ren, messageSurface3Select);
+			}
+			else
+			{
+				messageTexture3 = SDL_CreateTextureFromSurface(ren, messageSurface3);
+			}
+			message_rect3.x = 0;
+			message_rect3.y = 500;
+			message_rect3.w = 300 + stretchVAR;
+			message_rect3.h = 150;
+
+			//Draw the text
+			SDL_RenderCopy(ren, messageTexture3, NULL, &message_rect3);
 		}
-		message_rect2.x = 0;
-		message_rect2.y = 300;
-		message_rect2.w = 300 + stretchVAR;
-		message_rect2.h = 150;
+		break;
 
-		//Draw the text
-		SDL_RenderCopy(ren, messageTexture2, NULL, &message_rect2);
+		case 1:
+			std::cout << "Play Game Scene Frame!";
+			break;
+
+		case 2:
+			std::cout << "Options Scene Frame";
+			break;
 
 
-		// Rendering stuff for message 3 (Options)
-
-
-		if (menuItemSelect == 1)
-		{
-			messageTexture3 = SDL_CreateTextureFromSurface(ren, messageSurface3Select);
+		default:
+			break;
 		}
-		else
-		{
-			messageTexture3 = SDL_CreateTextureFromSurface(ren, messageSurface3);
-		}
-		message_rect3.x = 0;
-		message_rect3.y = 500;
-		message_rect3.w = 300 + stretchVAR;
-		message_rect3.h = 150;
 
-		//Draw the text
-		SDL_RenderCopy(ren, messageTexture3, NULL, &message_rect3);
 
 
 		//Update the screen
