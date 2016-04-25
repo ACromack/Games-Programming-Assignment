@@ -229,6 +229,12 @@ void handleInput()
 
 					case SDLK_RETURN:
 						gameSceneSelect = menuItemSelect;
+						if (gameSceneSelect == 2 && optionMenuItemSelect == 3)
+						{
+							gameSceneSelect = 0;
+							optionMenuItemSelect = 1;
+							menuItemSelect = 1;
+						}
 						audTest.playSound(gHigh);
 						break;
 
@@ -262,11 +268,13 @@ void render()
 		//First clear the renderer
 		SDL_RenderClear(ren);
 
-		//Draw the texture
-		SDL_RenderCopy(ren, tex, NULL, NULL);
+		//Draw the texture (Background)
+		//SDL_RenderCopy(ren, tex, NULL, NULL);
 
 		switch (gameSceneSelect)
 		{
+
+		// Main Menu
 		case 0:
 		{
 			// Rendering stuff for message 1 (Chuckie Egg)
@@ -321,10 +329,14 @@ void render()
 		}
 		break;
 
+		// Game
 		case 1:
+		{
 			std::cout << "Play Game Scene Frame!";
-			break;
+		}
+		break;
 
+		// Options
 		case 2:
 		{
 			messageTexture4 = SDL_CreateTextureFromSurface(ren, messageSurface4);
@@ -336,7 +348,7 @@ void render()
 			//Draw the text
 			SDL_RenderCopy(ren, messageTexture4, NULL, &message_rect4);
 
-			// Rendering stuff for message 5 (Play Game)
+			// Rendering stuff for message 5 (Resolution)
 
 			if (optionMenuItemSelect == 1)
 			{
@@ -347,15 +359,15 @@ void render()
 				messageTexture5 = SDL_CreateTextureFromSurface(ren, messageSurface5);
 			}
 			message_rect5.x = 0;
-			message_rect5.y = 300;
-			message_rect5.w = 300 + stretchVAR;
-			message_rect5.h = 150;
+			message_rect5.y = 200;
+			message_rect5.w = 200 + stretchVAR;
+			message_rect5.h = 100;
 
 			//Draw the text
 			SDL_RenderCopy(ren, messageTexture5, NULL, &message_rect5);
 
 
-			// Rendering stuff for message 6 (Options)
+			// Rendering stuff for message 6 (Volume)
 
 
 			if (optionMenuItemSelect == 2)
@@ -367,12 +379,32 @@ void render()
 				messageTexture6 = SDL_CreateTextureFromSurface(ren, messageSurface6);
 			}
 			message_rect6.x = 0;
-			message_rect6.y = 500;
-			message_rect6.w = 300 + stretchVAR;
-			message_rect6.h = 150;
+			message_rect6.y = 300;
+			message_rect6.w = 200 + stretchVAR;
+			message_rect6.h = 100;
 
 			//Draw the text
 			SDL_RenderCopy(ren, messageTexture6, NULL, &message_rect6);
+
+
+			// Rendering stuff for message 7 (Exit to Main Menu)
+
+
+			if (optionMenuItemSelect == 3)
+			{
+				messageTexture7 = SDL_CreateTextureFromSurface(ren, messageSurface7Select);
+			}
+			else
+			{
+				messageTexture7 = SDL_CreateTextureFromSurface(ren, messageSurface7);
+			}
+			message_rect7.x = 0;
+			message_rect7.y = 500;
+			message_rect7.w = 300 + stretchVAR;
+			message_rect7.h = 150;
+
+			//Draw the text
+			SDL_RenderCopy(ren, messageTexture7, NULL, &message_rect7);
 
 		}
 		break;
