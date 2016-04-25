@@ -73,13 +73,13 @@ std::string outputText = "Chuckie Egg"; //Output string for the title
 std::string outputText2 = "Play Game"; //Ouput string for the 'Play Game' menu option
 std::string outputText3 = "Options"; //Ouput string for the 'Options' menu option
 
-std::string optionText = "Options";
-std::string optionText2 = "Window Size: 1280x720";
-std::string optionText3 = "Volume: 100%";
-std::string optionText4 = "Return to Main Menu";
+std::string optionText = "Options"; //Options title text for the 'options menu'
+std::string optionText2 = "Window Size: 1280x720"; //Window size text for the 'options menu'
+std::string optionText3 = "Volume: 100%"; //Volume text for the 'options menu'
+std::string optionText4 = "Return to Main Menu"; //Return to main menu text for the 'options menu'
 
 int menuItemSelect = 1; // 1 == Play Game, 2 == Options
-int optionMenuItemSelect = 1; // 1 == Window Size, 2 == Volume, 3 == Return to Main Menu
+int optionMenuItemSelect = 0; // 1 == Window Size, 2 == Volume, 3 == Return to Main Menu
 int gameSceneSelect = 0; // 0 == Main Menu, 1 == Play Game, 2 == Options
 
 unsigned int lastTime = 0, currentTime;
@@ -96,6 +96,8 @@ Mix_Chunk *gMedium = NULL;
 Mix_Chunk *gLow = NULL;
 
 bool done = false;
+
+bool movingRight = false;
 
 Audio audTest;
 
@@ -138,61 +140,61 @@ void handleInput()
 						break;
 
 
-					/* Start of code for handling user input and testing audio stuff
-
-
-					// Press the 't' key to start playing music
-					case SDLK_t:
-						if (Mix_PlayingMusic() == 0)
-						{
-							Mix_PlayMusic(gMusic, -1);
-						}
-						break;
-
-					// Press the 'y' to pause the music (if already playing) and resume music (is currently paused)
-                    case SDLK_y:
-						if (Mix_PlayingMusic() == 1)
-						{
-
-							if (Mix_PausedMusic() == 0)
-							{
-								Mix_PauseMusic();
-							}
-							else
-							{
-								Mix_ResumeMusic();
-							}
-							
-						}
-						break;
-
-
-					// Press the 'b' key to play the sound effect of the 'gHigh' chunk
-					case SDLK_b:
-						Mix_PlayChannel(-1, gHigh, -1);
-						break;
-
-					// Press the 'n' key to change the volume of the 'gHigh' chunck to be 12
-					case SDLK_n:
-						Mix_VolumeChunk(gHigh, 12);
-						break;
-
-					// Press the 'm' key to change the volume of the 'gHigh' chunck to be 128
-					case SDLK_m:
-						Mix_VolumeChunk(gHigh, 128);
-						break;
-
-					// Press the 'f' key to play the 'gHigh' chunk on repeat with a fade in of 1500 ms
-					case SDLK_f:
-						Mix_FadeInChannel(-1, gHigh, -1, 1500);
-						break;
-
-					// Press the 'd' key to fade out the next occupied channel over 1500 ms
-					case SDLK_d:
-						Mix_FadeOutChannel(-1, 1500);
-						break;
-
-					End of code regarding user input and audio stuff */ 
+					////Start of code for handling user input and testing audio stuff
+					//
+					//
+					//// Press the 't' key to start playing music
+					//case SDLK_t:
+					//	if (Mix_PlayingMusic() == 0)
+					//	{
+					//		Mix_PlayMusic(gMusic, -1);
+					//	}
+					//	break;
+					//
+					//// Press the 'y' to pause the music (if already playing) and resume music (is currently paused)
+					//case SDLK_y:
+					//	if (Mix_PlayingMusic() == 1)
+					//	{
+					//
+					//		if (Mix_PausedMusic() == 0)
+					//		{
+					//			Mix_PauseMusic();
+					//		}
+					//		else
+					//		{
+					//			Mix_ResumeMusic();
+					//		}
+					//		
+					//	}
+					//	break;
+					//
+					//
+					//// Press the 'b' key to play the sound effect of the 'gHigh' chunk
+					//case SDLK_b:
+					//	Mix_PlayChannel(-1, gHigh, -1);
+					//	break;
+					//
+					//// Press the 'n' key to change the volume of the 'gHigh' chunck to be 12
+					//case SDLK_n:
+					//	Mix_VolumeChunk(gHigh, 12);
+					//	break;
+					//
+					//// Press the 'm' key to change the volume of the 'gHigh' chunck to be 128
+					//case SDLK_m:
+					//	Mix_VolumeChunk(gHigh, 128);
+					//	break;
+					//
+					//// Press the 'f' key to play the 'gHigh' chunk on repeat with a fade in of 1500 ms
+					//case SDLK_f:
+					//	Mix_FadeInChannel(-1, gHigh, -1, 1500);
+					//	break;
+					//
+					//// Press the 'd' key to fade out the next occupied channel over 1500 ms
+					//case SDLK_d:
+					//	Mix_FadeOutChannel(-1, 1500);
+					//	break;
+					//
+					////End of code regarding user input and audio stuff 
 
 
 					case SDLK_s:
@@ -227,9 +229,32 @@ void handleInput()
 						break;
 
 
+					case SDLK_d:
+						if (gameSceneSelect == 0)
+						{
+							
+						}
+						else if (gameSceneSelect == 1)
+						{
+
+						}
+						else
+						{
+							
+						}
+						break;
+
+
 					case SDLK_RETURN:
 						gameSceneSelect = menuItemSelect;
-						if (gameSceneSelect == 2 && optionMenuItemSelect == 3)
+						if (gameSceneSelect == 2 && optionMenuItemSelect == 1)
+						{
+							SDL_SetWindowSize(win, 1920, 1080);
+							optionText2 = "Window Size: 1920x1080";
+							std::cout << "Window size changed";
+
+						}
+						else if (gameSceneSelect == 2 && optionMenuItemSelect == 3)
 						{
 							gameSceneSelect = 0;
 							optionMenuItemSelect = 1;
@@ -449,7 +474,7 @@ int main( int argc, char* args[] )
 	std::cout << "SDL initialised OK!\n";
 
 	//create window
-	win = SDL_CreateWindow("SDL Hello World!", 100, 100, 1280, 720, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
+	win = SDL_CreateWindow("Chuckie Egg", 100, 100, 1280, 720, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
 
 
 	//error handling
@@ -536,7 +561,6 @@ int main( int argc, char* args[] )
 
 
 
-
 	while (!done) //loop until done flag is set)
 	{
 		handleInput(); // this should ONLY SET VARIABLES
@@ -545,6 +569,8 @@ int main( int argc, char* args[] )
 
 		//currentTime = SDL_GetTicks();
 		//auto t1 = Clock::now();
+		messageSurface5 = TTF_RenderText_Solid(sans, optionText2.c_str(), White); // Surface for when the 'Window Size' option when it's not selected
+		messageSurface5Select = TTF_RenderText_Solid(sans, optionText2.c_str(), Yellow);
 
 		render(); // this should render the world state according to VARIABLES
 

@@ -35,7 +35,7 @@ Audio::Audio()
 
 void Audio::playSound(Mix_Chunk *playedSound)
 {
-	Mix_PlayChannel(-1, playedSound, -1);
+	Mix_PlayChannel(-1, playedSound, 0);
 	printf("Hey, it worked!");
 }
 
