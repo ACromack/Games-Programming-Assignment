@@ -25,30 +25,50 @@ typedef std::chrono::high_resolution_clock Clock;
 std::string exeName;
 SDL_Window *win; //pointer to the SDL_Window
 SDL_Renderer *ren; //pointer to the SDL_Renderer
-SDL_Surface *surface; //pointer to the SDL_Surface
-SDL_Texture *tex; //pointer to the SDL_Texture
+
+SDL_Surface *surface; //pointer to the player surface
+SDL_Texture *tex; //pointer to the player texture
+
+SDL_Surface *surface2; // pointer for the floor surface
+SDL_Texture *tex2; // pointer for the floor texture
+
+SDL_Surface *surface3; // pointer for the ladder surface
+SDL_Texture *tex3; // pointer for the ladder texture
+
+SDL_Surface *surface4; // pointer for the 'egg' surface
+SDL_Texture *tex4; // pointer for the 'egg' texture
+
+SDL_Surface *surface5; // pointer for the 'seed' surface
+SDL_Texture *tex5; // pointer for the 'seed' texture
+
+
+SDL_Surface *enemySurface; // pointer for the enemy surface
+SDL_Texture *enemyTex; // pointer for the enemy texture
+
+SDL_Surface *player2Surface; // pointer for the second player's surface
+SDL_Texture *player2Tex; // pointer for the second player's texture
 
 // Main Menu :: Chuckie Egg Text
-	SDL_Surface *messageSurface; //pointer to the SDL_Surface for message
-	SDL_Texture *messageTexture; //pointer to the SDL_Texture for message
-	SDL_Rect message_rect; //SDL_rect for the message
+SDL_Surface *messageSurface; //pointer to the SDL_Surface for message
+SDL_Texture *messageTexture; //pointer to the SDL_Texture for message
+SDL_Rect message_rect; //SDL_rect for the message
 
 // Main Menu :: Play Game Text
-	SDL_Surface *messageSurface2; //pointer to the SDL_Surface for message2 (Play Game)
-	SDL_Surface *messageSurface2Select; //pointer to the SDL_Surface for message2 (Play Game) when it is selected
-	SDL_Texture *messageTexture2; //pointer to the SDL_Texture for message2 (Play Game)
-	SDL_Rect message_rect2; //SDL_rect for the message2 (Play Game)
+SDL_Surface *messageSurface2; //pointer to the SDL_Surface for message2 (Play Game)
+SDL_Surface *messageSurface2Select; //pointer to the SDL_Surface for message2 (Play Game) when it is selected
+SDL_Texture *messageTexture2; //pointer to the SDL_Texture for message2 (Play Game)
+SDL_Rect message_rect2; //SDL_rect for the message2 (Play Game)
 
 // Main Menu :: Options Text
-	SDL_Surface *messageSurface3; //pointer to the SDL_Surface for message3 (Options)
-	SDL_Surface *messageSurface3Select; //pointer to the SDL_Surface for message3 (Options) when it is selected
-	SDL_Texture *messageTexture3; //pointer to the SDL_Texture for message3 (Options)
-	SDL_Rect message_rect3; //SDL_rect for the message3 (Options)
+SDL_Surface *messageSurface3; //pointer to the SDL_Surface for message3 (Options)
+SDL_Surface *messageSurface3Select; //pointer to the SDL_Surface for message3 (Options) when it is selected
+SDL_Texture *messageTexture3; //pointer to the SDL_Texture for message3 (Options)
+SDL_Rect message_rect3; //SDL_rect for the message3 (Options)
 
 // Options Menu :: Option Text
-	SDL_Surface *messageSurface4; //pointer to the SDL_Surface for message4 (Options)
-	SDL_Texture *messageTexture4; //pointer to the SDL_Texture for message4 (Options)
-	SDL_Rect message_rect4; //SDL_rect for the message4 ()
+SDL_Surface *messageSurface4; //pointer to the SDL_Surface for message4 (Options)
+SDL_Texture *messageTexture4; //pointer to the SDL_Texture for message4 (Options)
+SDL_Rect message_rect4; //SDL_rect for the message4 ()
 
 // Options Menu :: Window Size Text
 SDL_Surface *messageSurface5; //pointer to the SDL_Surface for message5 (Window Size)
@@ -69,19 +89,6 @@ SDL_Texture *messageTexture7; //pointer to the SDL_Texture for message7 (Window 
 SDL_Rect message_rect7; //SDL_rect for the message7 (Window Size)
 
 
-SDL_Surface *surface2; // pointer for the floor surface
-SDL_Texture *tex2; // pointer for the floor texture
-
-SDL_Surface *surface3; // pointer for the ladder surface
-SDL_Texture *tex3; // pointer for the ladder texture
-
-SDL_Surface *surface4; // pointer for the 'egg' surface
-SDL_Texture *tex4; // pointer for the 'egg' texture
-
-SDL_Surface *surface5; // pointer for the 'seed' surface
-SDL_Texture *tex5; // pointer for the 'seed' texture
-
-
 
 std::string outputText = "Chuckie Egg"; //Output string for the title
 std::string outputText2 = "Play Game"; //Ouput string for the 'Play Game' menu option
@@ -99,15 +106,11 @@ int gameSceneSelect = 0; // 0 == Main Menu, 1 == Play Game, 2 == Options
 unsigned int lastTime = 0, currentTime;
 int stretchVAR = 200;
 
-bool moveUpRect = true;
-bool movingRight = false;
-bool movingLeft = false;
-
-//int yCoord = 150;
-//int xCoord = 150;
-//int spriteFrame = 0;
-//int spriteX = 0;
-//int spriteY = 0;
+bool moveUpRect = true; // Not too sure what this is for?
+bool movingRight = false; // Is the player moving right?
+bool movingLeft = false; // Is the player moving left?
+bool p2MoveRight = false; // Is the second player moving right?
+bool p2MoveLeft = false; // Is the second player moving left?
 
 
 // Music that will be played
@@ -159,7 +162,8 @@ void handleInput()
 			if (!event.key.repeat)
 				switch (event.key.keysym.sym)
 				{
-					//hit escape to exit
+
+				//hit escape to exit
 				case SDLK_ESCAPE:
 					done = true;
 					break;
@@ -221,11 +225,11 @@ void handleInput()
 					//
 					////End of code regarding user input and audio stuff 
 
-
+				// Keypress case for 's' in the different game scenes
 				case SDLK_s:
 					if (gameSceneSelect == 0)
 					{
-						menuItemSelect = 2;
+						menuItemSelect = 2; // When in Main Menu, moves the selected menu item down to 'options'
 					}
 					else if (gameSceneSelect == 1)
 					{
@@ -233,15 +237,16 @@ void handleInput()
 					}
 					else
 					{
-						optionMenuItemSelect++;
+						optionMenuItemSelect++; // When in the Options menu, moves the selected item down the menu
 					}
 
 					break;
 
+				// Keypress case for 'w' in the different game scenes
 				case SDLK_w:
 					if (gameSceneSelect == 0)
 					{
-						menuItemSelect = 1;
+						menuItemSelect = 1; // When in Main Menu, moves the selected menu item up to 'Play Game'
 					}
 					else if (gameSceneSelect == 1)
 					{
@@ -249,7 +254,7 @@ void handleInput()
 					}
 					else
 					{
-						optionMenuItemSelect--;
+						optionMenuItemSelect--; // When in the Options menu, moves the selected item up the menu
 					}
 					break;
 
@@ -288,7 +293,7 @@ void handleInput()
 					audTest.playSound(gHigh);
 					break;
 
-					// Testing for changing the window's size
+				// Testing for changing the window's size
 				case SDLK_t:
 					SDL_SetWindowSize(win, 1024, 576);
 					break;
@@ -305,15 +310,30 @@ void handleInput()
 			{
 				switch (event.key.keysym.sym)
 				{
+					// Player 1 Right Movement
 				case SDLK_d:
 					movingRight = true;
-					//xCoord += 4;
+					sprTest.spritePlayerRight(5);
 					break;
 
+					// Player 1 Left Movement
 				case SDLK_a:
 					movingLeft = true;
-					//xCoord -= 4;
+					sprTest.spritePlayerRight(-5);
 					break;
+
+					// Player 2 Right Movement
+				case SDLK_RIGHT:
+					p2MoveRight = true;
+					sprTest.spritePlayer2Move(5);
+					break;
+
+					// Player 2 Left Movement
+				case SDLK_LEFT:
+					p2MoveLeft = true;
+					sprTest.spritePlayer2Move(-5);
+					break;
+
 				}
 			}
 			break;
@@ -330,6 +350,17 @@ void handleInput()
 			case SDLK_a:
 				movingLeft = false;
 				break;
+
+				// Player 2 Right Movement
+			case SDLK_RIGHT:
+				p2MoveRight = false;
+				break;
+
+				// Player 2 Left Movement
+			case SDLK_LEFT:
+				p2MoveLeft = false;
+				break;
+
 			}
 			break;
 		}
@@ -412,9 +443,11 @@ void render()
 		// Game
 		case 1:
 		{
+			// Use the audio class to start playing music when the game starts
 			audTest.playMusic(gMusic);
 
-			sprTest.spriteMovement(movingRight, movingLeft, ren, tex, tex2, tex3, tex4);
+			// Use the sprite class to start moving sprites
+			sprTest.spriteMovement(movingRight, movingLeft, p2MoveRight, p2MoveLeft, ren, tex, tex2, tex3, tex4, tex5, enemyTex, player2Tex);
 
 		}
 		break;
@@ -549,20 +582,6 @@ int main( int argc, char* args[] )
 		cleanExit(1);
 	}
 
-	//std::string imagePath = "./assets/BraveSec1.jpg";
-	//surface = IMG_Load(imagePath.c_str());
-	//if (surface == nullptr){
-	//	std::cout << "SDL IMG_Load Error: " << SDL_GetError() << std::endl;
-	//	cleanExit(1);
-	//}
-
-	//tex = SDL_CreateTextureFromSurface(ren, surface);
-	//SDL_FreeSurface(surface);
-	//if (tex == nullptr){
-	//	std::cout << "SDL_CreateTextureFromSurface Error: " << SDL_GetError() << std::endl;
-	//	cleanExit(1);
-	//}
-
 
 	// Image loading etc. for the player sprites
 	{
@@ -624,6 +643,25 @@ int main( int argc, char* args[] )
 	}
 
 
+	// Image loading etc. for the enemy sprites
+	{
+		std::string enemyImagePath = "./assets/p3_spritesheet.png";
+		enemySurface = IMG_Load(enemyImagePath.c_str());
+
+		enemyTex = SDL_CreateTextureFromSurface(ren, enemySurface);
+		SDL_FreeSurface(enemySurface);
+	}
+
+
+	// Image loading etc. for the second player's sprites
+	{
+		std::string imagePathP2 = "./assets/p2_spritesheet.png";
+		player2Surface = IMG_Load(imagePathP2.c_str());
+
+		player2Tex = SDL_CreateTextureFromSurface(ren, player2Surface);
+		SDL_FreeSurface(player2Surface);
+	}
+
 
 
 	if( TTF_Init() == -1 )
@@ -632,6 +670,7 @@ int main( int argc, char* args[] )
 		cleanExit(1);
 	}
 
+	// Load in a font
 	TTF_Font* sans = TTF_OpenFont("./assets/angerpoise lampshade.ttf", 102);
 	if (sans == nullptr)
 	{
@@ -669,7 +708,7 @@ int main( int argc, char* args[] )
 		cleanExit(1);
 	}
 
-	gMusic = Mix_LoadMUS("./assets/musicSFX/beat.wav");
+	gMusic = Mix_LoadMUS("./assets/gameMusic.wav");
 	if (!gMusic)
 	{
 		printf("Gone done goofed on gMusic");
