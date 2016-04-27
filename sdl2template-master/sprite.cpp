@@ -13,122 +13,8 @@ void spriteClass::spritePlayerRight(int moveRightSpeed)
 	xCoord = xCoord + moveRightSpeed;
 }
 
-void spriteClass::spriteMovement(bool movingRight, bool movingLeft, bool p2MoveRight, bool p2MoveLeft, SDL_Renderer *ren, SDL_Texture *tex, SDL_Texture *tex2, SDL_Texture *tex3, SDL_Texture *tex4, SDL_Texture *tex5, SDL_Texture *enemyTex, SDL_Texture *player2Tex)
+void spriteClass::spriteMovement(bool movingRight, bool movingLeft, bool movingUp, bool p2MoveRight, bool p2MoveLeft, SDL_Renderer *ren, SDL_Texture *tex, SDL_Texture *tex2, SDL_Texture *tex3, SDL_Texture *tex4, SDL_Texture *tex5, SDL_Texture *enemyTex, SDL_Texture *player2Tex)
 {
-	//Draw the texture (player sprite)
-	{
-		switch (spriteFrame)
-		{
-		case 0:
-			spriteX = 0;
-			spriteY = 0;
-			break;
-
-		case 1:
-			spriteX = 73;
-			spriteY = 0;
-			break;
-
-		case 2:
-			spriteX = 146;
-			spriteY = 0;
-			break;
-
-		case 3:
-			spriteX = 0;
-			spriteY = 98;
-			break;
-
-		case 4:
-			spriteX = 73;
-			spriteY = 98;
-			break;
-
-		case 5:
-			spriteX = 146;
-			spriteY = 98;
-			break;
-
-		case 6:
-			spriteX = 219;
-			spriteY = 0;
-			break;
-
-		case 7:
-			spriteX = 292;
-			spriteY = 0;
-			break;
-
-		case 8:
-			spriteX = 219;
-			spriteY = 98;
-			break;
-
-		case 9:
-			spriteX = 365;
-			spriteY = 0;
-			break;
-
-		case 10:
-			spriteX = 292;
-			spriteY = 98;
-			spriteFrame = 0;
-			break;
-		}
-
-		SDL_Rect texture_rect;
-		texture_rect.x = xCoord;
-		texture_rect.y = yCoord;
-		texture_rect.w = 72;
-		texture_rect.h = 97;
-
-
-		SDL_Rect sprite_rect;
-		sprite_rect.x = spriteX;
-		sprite_rect.y = spriteY;
-		sprite_rect.w = 72;
-		sprite_rect.h = 97;
-
-		if (movingRight == true && movingLeft == false)
-		{
-			if (xCoord + 72 < 1280)
-			{
-				SDL_RenderCopy(ren, tex, &sprite_rect, &texture_rect);
-				spriteFrame++;
-			}
-			else
-			{
-				movingRight = false;
-				xCoord = 1280 - 72;
-				spriteFrame = 1;
-				SDL_RenderCopy(ren, tex, &sprite_rect, &texture_rect);
-			}
-			
-		}
-		else if (movingLeft == true && movingRight == false)
-		{
-			if (xCoord > 0)
-			{
-				SDL_RenderCopy(ren, tex, &sprite_rect, &texture_rect);
-				spriteFrame++;
-				movingLeft = false;
-			}
-			else
-			{
-				movingLeft = false;
-				xCoord = 0.1;
-				spriteFrame = 1;
-				SDL_RenderCopy(ren, tex, &sprite_rect, &texture_rect);
-			}
-		}
-		else
-		{
-			spriteFrame = 1;
-			SDL_RenderCopy(ren, tex, &sprite_rect, &texture_rect);
-		}
-
-		
-	}
 
 
 	// Code relating to the floor sprites
@@ -228,11 +114,25 @@ void spriteClass::spriteMovement(bool movingRight, bool movingLeft, bool p2MoveR
 
 		SDL_RenderCopy(ren, tex2, &sprite_rect2, &texture_rect2);
 
+		// 3rd Floor
+		texture_rect2.x = 200;
+		texture_rect2.y = 200;
+		texture_rect2.w = 200;
+		texture_rect2.h = 40;
+
+		sprite_rect2.x = 0;
+		sprite_rect2.y = 10;
+		sprite_rect2.w = 70;
+		sprite_rect2.h = 70;
+
+		SDL_RenderCopy(ren, tex2, &sprite_rect2, &texture_rect2);
+
+
 	}
 
 
 	// Code relating to the ladders
-	{
+
 		// Ladder 1 (Right)
 		SDL_Rect texture_rect3;
 		texture_rect3.x = 950;
@@ -250,37 +150,38 @@ void spriteClass::spriteMovement(bool movingRight, bool movingLeft, bool p2MoveR
 
 
 		// Ladder 2 (Middle)
-		texture_rect3.x = 600;
-		texture_rect3.y = 430;
-		texture_rect3.w = 40;
-		texture_rect3.h = 250;
+		SDL_Rect texture_rect3a;
+		texture_rect3a.x = 600;
+		texture_rect3a.y = 430;
+		texture_rect3a.w = 40;
+		texture_rect3a.h = 250;
 
 		sprite_rect3.x = 0;
 		sprite_rect3.y = 10;
 		sprite_rect3.w = 70;
 		sprite_rect3.h = 70;
 
-		SDL_RenderCopy(ren, tex3, &sprite_rect3, &texture_rect3);
+		SDL_RenderCopy(ren, tex3, &sprite_rect3, &texture_rect3a);
 
 
 		// Ladder 3 (Left, Tall)
-		texture_rect3.x = 400;
-		texture_rect3.y = 80;
-		texture_rect3.w = 40;
-		texture_rect3.h = 600;
+		SDL_Rect texture_rect3b;
+		texture_rect3b.x = 400;
+		texture_rect3b.y = 80;
+		texture_rect3b.w = 40;
+		texture_rect3b.h = 600;
 
 		sprite_rect3.x = 0;
 		sprite_rect3.y = 10;
 		sprite_rect3.w = 70;
 		sprite_rect3.h = 70;
 
-		SDL_RenderCopy(ren, tex3, &sprite_rect3, &texture_rect3);
+		SDL_RenderCopy(ren, tex3, &sprite_rect3, &texture_rect3b);
 
-	}
 
 
 	// Code relating to the eggs
-	{
+	
 		// Egg 1
 		SDL_Rect texture_rect4;
 		texture_rect4.x = 1120;
@@ -295,7 +196,16 @@ void spriteClass::spriteMovement(bool movingRight, bool movingLeft, bool p2MoveR
 		sprite_rect4.h = 70;
 
 		SDL_RenderCopy(ren, tex4, &sprite_rect4, &texture_rect4);
-	}
+
+		// Egg 2
+		SDL_Rect texture_rectEgg2;
+		texture_rectEgg2.x = 1120;
+		texture_rectEgg2.y = 630;
+		texture_rectEgg2.w = 50;
+		texture_rectEgg2.h = 50;
+
+		SDL_RenderCopy(ren, tex4, &sprite_rect4, &texture_rectEgg2);
+	
 
 
 	// Code relating to enemies
@@ -374,6 +284,7 @@ void spriteClass::spriteMovement(bool movingRight, bool movingLeft, bool p2MoveR
 
 		if (movingRight == true && movingLeft == false)
 		{
+			// Collision Detection for when the player hits the right wall, followed by left wall detection
 			if (xCoord + 72 < 1280)
 			{
 				SDL_RenderCopy(ren, enemyTex, &sprite_rectEnemy, &texture_rectEnemy);
@@ -406,10 +317,143 @@ void spriteClass::spriteMovement(bool movingRight, bool movingLeft, bool p2MoveR
 		}
 		else
 		{
+			// When the player is stood still, display this one sprite
 			spriteFrame = 1;
 			SDL_RenderCopy(ren, enemyTex, &sprite_rectEnemy, &texture_rectEnemy);
 		}
 	}
+
+
+	//Draw the texture (player sprite)
+	
+		switch (spriteFrame)
+		{
+		case 0:
+			spriteX = 0;
+			spriteY = 0;
+			break;
+
+		case 1:
+			spriteX = 73;
+			spriteY = 0;
+			break;
+
+		case 2:
+			spriteX = 146;
+			spriteY = 0;
+			break;
+
+		case 3:
+			spriteX = 0;
+			spriteY = 98;
+			break;
+
+		case 4:
+			spriteX = 73;
+			spriteY = 98;
+			break;
+
+		case 5:
+			spriteX = 146;
+			spriteY = 98;
+			break;
+
+		case 6:
+			spriteX = 219;
+			spriteY = 0;
+			break;
+
+		case 7:
+			spriteX = 292;
+			spriteY = 0;
+			break;
+
+		case 8:
+			spriteX = 219;
+			spriteY = 98;
+			break;
+
+		case 9:
+			spriteX = 365;
+			spriteY = 0;
+			break;
+
+		case 10:
+			spriteX = 292;
+			spriteY = 98;
+			spriteFrame = 0;
+			break;
+		}
+
+		SDL_Rect texture_rect;
+		texture_rect.x = xCoord;
+		texture_rect.y = yCoord;
+		texture_rect.w = 72;
+		texture_rect.h = 97;
+
+
+		SDL_Rect sprite_rect;
+		sprite_rect.x = spriteX;
+		sprite_rect.y = spriteY;
+		sprite_rect.w = 72;
+		sprite_rect.h = 97;
+
+		if (movingRight == true && movingLeft == false)
+		{
+			if (xCoord + 72 < 1280)
+			{
+				SDL_RenderCopy(ren, tex, &sprite_rect, &texture_rect);
+				spriteFrame++;
+			}
+			else
+			{
+				movingRight = false;
+				xCoord = 1280 - 72;
+				spriteFrame = 1;
+				SDL_RenderCopy(ren, tex, &sprite_rect, &texture_rect);
+			}
+
+		}
+		else if (movingLeft == true && movingRight == false)
+		{
+			if (xCoord > 0)
+			{
+				SDL_RenderCopy(ren, tex, &sprite_rect, &texture_rect);
+				spriteFrame++;
+				movingLeft = false;
+			}
+			else
+			{
+				movingLeft = false;
+				xCoord = 0.1;
+				spriteFrame = 1;
+				SDL_RenderCopy(ren, tex, &sprite_rect, &texture_rect);
+			}
+		}
+		else
+		{
+			spriteFrame = 1;
+			SDL_RenderCopy(ren, tex, &sprite_rect, &texture_rect);
+		}
+
+		if (texture_rect.x == texture_rectEgg2.x && texture_rect.y + 45 == texture_rectEgg2.y)
+		{
+			std::cout << "Score!" << std::endl;
+		}
+	
+
+		if (texture_rect.x >= texture_rect3.x && texture_rect.x <= texture_rect3.x + 40 && texture_rect.y > texture_rect3.y - 25 && movingUp == true)
+		{
+			yCoord = yCoord - 5;
+		}
+		else if (texture_rect.x >= texture_rect3a.x && texture_rect.x <= texture_rect3a.x + 40 && texture_rect.y > texture_rect3a.y - 25 && movingUp == true)
+		{
+			yCoord = yCoord - 5;
+		}
+		else if (texture_rect.x >= texture_rect3b.x && texture_rect.x <= texture_rect3b.x + 40 && texture_rect.y > texture_rect3b.y && movingUp == true)
+		{
+			yCoord = yCoord - 5;
+		}
 
 
 	// Code relating to drawing player 2's sprite

@@ -10,11 +10,10 @@ class loadingClass
 	private:
 
 
-
 	public:
 		loadingClass();
 
-		void loadScreen();
+		void loadScreen(SDL_Renderer *ren, SDL_Surface *loadingScreenSurface, SDL_Texture *loadingScreenTexture);
 
 		~loadingClass();
 };

@@ -25,7 +25,7 @@ private:
 public:
 	spriteClass();
 
-	void spriteMovement(bool movingRight, bool movingLeft, bool p2MoveRight, bool p2MoveLeft, SDL_Renderer *ren, SDL_Texture *tex, SDL_Texture *tex2, SDL_Texture *tex3, SDL_Texture *tex4, SDL_Texture *tex5, SDL_Texture *enemyTex, SDL_Texture *player2Tex);
+	void spriteMovement(bool movingRight, bool movingLeft, bool movingUp, bool p2MoveRight, bool p2MoveLeft, SDL_Renderer *ren, SDL_Texture *tex, SDL_Texture *tex2, SDL_Texture *tex3, SDL_Texture *tex4, SDL_Texture *tex5, SDL_Texture *enemyTex, SDL_Texture *player2Tex);
 
 	void spritePlayerRight(int moveRightSpeed);
 

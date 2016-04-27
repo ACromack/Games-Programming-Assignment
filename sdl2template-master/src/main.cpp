@@ -21,6 +21,7 @@ typedef std::chrono::high_resolution_clock Clock;
 
 #include "audio.h"
 #include "sprite.h"
+#include "loading.h"
 
 std::string exeName;
 SDL_Window *win; //pointer to the SDL_Window
@@ -88,6 +89,9 @@ SDL_Surface *messageSurface7Select; //pointer to the SDL_Surface for message7 (W
 SDL_Texture *messageTexture7; //pointer to the SDL_Texture for message7 (Window Size)
 SDL_Rect message_rect7; //SDL_rect for the message7 (Window Size)
 
+// Loading Sceen
+SDL_Surface *messageSurfaceLoading; // pointer to the SDL_Surface for the Loading Screen message
+SDL_Texture *messageTextureLoading; // pointer to the SDL_Texture for the Loading Screen message
 
 
 std::string outputText = "Chuckie Egg"; //Output string for the title
@@ -99,14 +103,23 @@ std::string optionText2 = "Window Size: 1280x720"; //Window size text for the 'o
 std::string optionText3 = "Volume: 100%"; //Volume text for the 'options menu'
 std::string optionText4 = "Return to Main Menu"; //Return to main menu text for the 'options menu'
 
+std::string loadingText = "Loading..."; // Text for the loading screen upon selecting 'Play Game'
+
+std::string player1ScoreText = "P1: "; // Text for player 1's score
+std::string player2ScoreText = "P2: "; // Text for player 2's score
+
 int menuItemSelect = 1; // 1 == Play Game, 2 == Options
 int optionMenuItemSelect = 0; // 1 == Window Size, 2 == Volume, 3 == Return to Main Menu
 int gameSceneSelect = 0; // 0 == Main Menu, 1 == Play Game, 2 == Options
 
 unsigned int lastTime = 0, currentTime;
 int stretchVAR = 200;
+int loadWait = 200;
 
-bool moveUpRect = true; // Not too sure what this is for?
+int player1Score = 0;
+int player2Score = 0;
+
+bool movingUp = false; // Is the player moving up? (ladder)
 bool movingRight = false; // Is the player moving right?
 bool movingLeft = false; // Is the player moving left?
 bool p2MoveRight = false; // Is the second player moving right?
@@ -124,6 +137,7 @@ Mix_Chunk *gLow = NULL;
 
 bool done = false;
 
+loadingClass loadTest;
 
 Audio audTest;
 
@@ -322,6 +336,11 @@ void handleInput()
 					sprTest.spritePlayerRight(-5);
 					break;
 
+					// Player 1 Up Movement
+				case SDLK_w:
+					movingUp = true;
+					break;
+
 					// Player 2 Right Movement
 				case SDLK_RIGHT:
 					p2MoveRight = true;
@@ -343,12 +362,19 @@ void handleInput()
 		case SDL_KEYUP:
 			switch (event.key.keysym.sym)
 			{
+				// Player 1 Right Movement Stop
 			case SDLK_d:
 				movingRight = false;
 				break;
 
+				// Player 1 Left Movement Stop
 			case SDLK_a:
 				movingLeft = false;
+				break;
+
+				// Player 1 Up Movement Stop
+			case SDLK_w:
+				movingUp = false;
 				break;
 
 				// Player 2 Right Movement
@@ -443,11 +469,19 @@ void render()
 		// Game
 		case 1:
 		{
-			// Use the audio class to start playing music when the game starts
-			audTest.playMusic(gMusic);
+			if (loadWait > 0)
+			{
+				loadTest.loadScreen(ren, messageSurfaceLoading, messageTextureLoading);
+				loadWait--;
+			}
+			else
+			{
+				// Use the audio class to start playing music when the game starts
+				audTest.playMusic(gMusic);
 
-			// Use the sprite class to start moving sprites
-			sprTest.spriteMovement(movingRight, movingLeft, p2MoveRight, p2MoveLeft, ren, tex, tex2, tex3, tex4, tex5, enemyTex, player2Tex);
+				// Use the sprite class to start moving sprites
+				sprTest.spriteMovement(movingRight, movingLeft, movingUp, p2MoveRight, p2MoveLeft, ren, tex, tex2, tex3, tex4, tex5, enemyTex, player2Tex);
+			}
 
 		}
 		break;
@@ -699,6 +733,8 @@ int main( int argc, char* args[] )
 		messageSurface7Select = TTF_RenderText_Solid(sans, optionText4.c_str(), Yellow); // Surface for when the 'Back to Main Menu' option is selected in the menu
 	}
 
+	// Message for the Loading Screen
+	messageSurfaceLoading = TTF_RenderText_Solid(sans, loadingText.c_str(), White);
 
 
 	// error handling for audio
