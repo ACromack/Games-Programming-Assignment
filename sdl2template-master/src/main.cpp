@@ -29,26 +29,26 @@ SDL_Surface *surface; //pointer to the SDL_Surface
 SDL_Texture *tex; //pointer to the SDL_Texture
 
 // Main Menu :: Chuckie Egg Text
-SDL_Surface *messageSurface; //pointer to the SDL_Surface for message
-SDL_Texture *messageTexture; //pointer to the SDL_Texture for message
-SDL_Rect message_rect; //SDL_rect for the message
+	SDL_Surface *messageSurface; //pointer to the SDL_Surface for message
+	SDL_Texture *messageTexture; //pointer to the SDL_Texture for message
+	SDL_Rect message_rect; //SDL_rect for the message
 
 // Main Menu :: Play Game Text
-SDL_Surface *messageSurface2; //pointer to the SDL_Surface for message2 (Play Game)
-SDL_Surface *messageSurface2Select; //pointer to the SDL_Surface for message2 (Play Game) when it is selected
-SDL_Texture *messageTexture2; //pointer to the SDL_Texture for message2 (Play Game)
-SDL_Rect message_rect2; //SDL_rect for the message2 (Play Game)
+	SDL_Surface *messageSurface2; //pointer to the SDL_Surface for message2 (Play Game)
+	SDL_Surface *messageSurface2Select; //pointer to the SDL_Surface for message2 (Play Game) when it is selected
+	SDL_Texture *messageTexture2; //pointer to the SDL_Texture for message2 (Play Game)
+	SDL_Rect message_rect2; //SDL_rect for the message2 (Play Game)
 
 // Main Menu :: Options Text
-SDL_Surface *messageSurface3; //pointer to the SDL_Surface for message3 (Options)
-SDL_Surface *messageSurface3Select; //pointer to the SDL_Surface for message3 (Options) when it is selected
-SDL_Texture *messageTexture3; //pointer to the SDL_Texture for message3 (Options)
-SDL_Rect message_rect3; //SDL_rect for the message3 (Options)
+	SDL_Surface *messageSurface3; //pointer to the SDL_Surface for message3 (Options)
+	SDL_Surface *messageSurface3Select; //pointer to the SDL_Surface for message3 (Options) when it is selected
+	SDL_Texture *messageTexture3; //pointer to the SDL_Texture for message3 (Options)
+	SDL_Rect message_rect3; //SDL_rect for the message3 (Options)
 
 // Options Menu :: Option Text
-SDL_Surface *messageSurface4; //pointer to the SDL_Surface for message4 (Options)
-SDL_Texture *messageTexture4; //pointer to the SDL_Texture for message4 (Options)
-SDL_Rect message_rect4; //SDL_rect for the message4 ()
+	SDL_Surface *messageSurface4; //pointer to the SDL_Surface for message4 (Options)
+	SDL_Texture *messageTexture4; //pointer to the SDL_Texture for message4 (Options)
+	SDL_Rect message_rect4; //SDL_rect for the message4 ()
 
 // Options Menu :: Window Size Text
 SDL_Surface *messageSurface5; //pointer to the SDL_Surface for message5 (Window Size)
@@ -69,6 +69,20 @@ SDL_Texture *messageTexture7; //pointer to the SDL_Texture for message7 (Window 
 SDL_Rect message_rect7; //SDL_rect for the message7 (Window Size)
 
 
+SDL_Surface *surface2; // pointer for the floor surface
+SDL_Texture *tex2; // pointer for the floor texture
+
+SDL_Surface *surface3; // pointer for the ladder surface
+SDL_Texture *tex3; // pointer for the ladder texture
+
+SDL_Surface *surface4; // pointer for the 'egg' surface
+SDL_Texture *tex4; // pointer for the 'egg' texture
+
+SDL_Surface *surface5; // pointer for the 'seed' surface
+SDL_Texture *tex5; // pointer for the 'seed' texture
+
+
+
 std::string outputText = "Chuckie Egg"; //Output string for the title
 std::string outputText2 = "Play Game"; //Ouput string for the 'Play Game' menu option
 std::string outputText3 = "Options"; //Ouput string for the 'Options' menu option
@@ -85,6 +99,16 @@ int gameSceneSelect = 0; // 0 == Main Menu, 1 == Play Game, 2 == Options
 unsigned int lastTime = 0, currentTime;
 int stretchVAR = 200;
 
+bool moveUpRect = true;
+bool movingRight = false;
+bool movingLeft = false;
+
+//int yCoord = 150;
+//int xCoord = 150;
+//int spriteFrame = 0;
+//int spriteX = 0;
+//int spriteY = 0;
+
 
 // Music that will be played
 Mix_Music *gMusic = NULL;
@@ -97,9 +121,10 @@ Mix_Chunk *gLow = NULL;
 
 bool done = false;
 
-bool movingRight = false;
 
 Audio audTest;
+
+spriteClass sprTest;
 
 void handleInput()
 {
@@ -135,9 +160,9 @@ void handleInput()
 				switch (event.key.keysym.sym)
 				{
 					//hit escape to exit
-					case SDLK_ESCAPE: 
-						done = true;
-						break;
+				case SDLK_ESCAPE:
+					done = true;
+					break;
 
 
 					////Start of code for handling user input and testing audio stuff
@@ -197,85 +222,115 @@ void handleInput()
 					////End of code regarding user input and audio stuff 
 
 
-					case SDLK_s:
-						if (gameSceneSelect == 0)
-						{
-							menuItemSelect = 2;
-						}
-						else if (gameSceneSelect == 1)
-						{
+				case SDLK_s:
+					if (gameSceneSelect == 0)
+					{
+						menuItemSelect = 2;
+					}
+					else if (gameSceneSelect == 1)
+					{
 
-						}
-						else
-						{
-							optionMenuItemSelect++;
-						}
-						
-						break;
+					}
+					else
+					{
+						optionMenuItemSelect++;
+					}
 
-					case SDLK_w:
-						if (gameSceneSelect == 0)
-						{
-							menuItemSelect = 1;
-						}
-						else if (gameSceneSelect == 1)
-						{
+					break;
 
-						}
-						else
-						{
-							optionMenuItemSelect--;
-						}
-						break;
+				case SDLK_w:
+					if (gameSceneSelect == 0)
+					{
+						menuItemSelect = 1;
+					}
+					else if (gameSceneSelect == 1)
+					{
 
-
-					case SDLK_d:
-						if (gameSceneSelect == 0)
-						{
-							
-						}
-						else if (gameSceneSelect == 1)
-						{
-
-						}
-						else
-						{
-							
-						}
-						break;
+					}
+					else
+					{
+						optionMenuItemSelect--;
+					}
+					break;
 
 
-					case SDLK_RETURN:
-						gameSceneSelect = menuItemSelect;
-						if (gameSceneSelect == 2 && optionMenuItemSelect == 1)
-						{
-							SDL_SetWindowSize(win, 1920, 1080);
-							optionText2 = "Window Size: 1920x1080";
-							std::cout << "Window size changed";
+				case SDLK_d:
+					if (gameSceneSelect == 0)
+					{
 
-						}
-						else if (gameSceneSelect == 2 && optionMenuItemSelect == 3)
-						{
-							gameSceneSelect = 0;
-							optionMenuItemSelect = 1;
-							menuItemSelect = 1;
-						}
-						audTest.playSound(gHigh);
-						break;
+					}
+					else if (gameSceneSelect == 1)
+					{
+
+					}
+					else
+					{
+
+					}
+					break;
+
+
+				case SDLK_RETURN:
+					gameSceneSelect = menuItemSelect;
+					if (gameSceneSelect == 2 && optionMenuItemSelect == 1) // Case for when the user changes the resolution of the window
+					{
+						SDL_SetWindowSize(win, 1920, 1080);
+						optionText2 = "Window Size: 1920x1080";
+						std::cout << "Window size changed";
+
+					}
+					else if (gameSceneSelect == 2 && optionMenuItemSelect == 3) // Case for when the user selects the 'return to main menu' option
+					{
+						gameSceneSelect = 0;
+						optionMenuItemSelect = 1;
+						menuItemSelect = 1;
+					}
+					audTest.playSound(gHigh);
+					break;
 
 					// Testing for changing the window's size
-					case SDLK_t:
-						SDL_SetWindowSize(win, 1024, 576);
-						break;
+				case SDLK_t:
+					SDL_SetWindowSize(win, 1024, 576);
+					break;
 
 
 					// Testing for different classes
-					case SDLK_r:
-						audTest.playSound(gHigh);
-						spriteClass();
-						break;
+				case SDLK_r:
+					audTest.playSound(gHigh);
+					spriteClass();
+					break;
 
 				}
+			else
+			{
+				switch (event.key.keysym.sym)
+				{
+				case SDLK_d:
+					movingRight = true;
+					//xCoord += 4;
+					break;
+
+				case SDLK_a:
+					movingLeft = true;
+					//xCoord -= 4;
+					break;
+				}
+			}
+			break;
+
+
+
+		case SDL_KEYUP:
+			switch (event.key.keysym.sym)
+			{
+			case SDLK_d:
+				movingRight = false;
+				break;
+
+			case SDLK_a:
+				movingLeft = false;
+				break;
+			}
 			break;
 		}
 	}
@@ -357,7 +412,10 @@ void render()
 		// Game
 		case 1:
 		{
-			std::cout << "Play Game Scene Frame!";
+			audTest.playMusic(gMusic);
+
+			sprTest.spriteMovement(movingRight, movingLeft, ren, tex, tex2, tex3, tex4);
+
 		}
 		break;
 
@@ -440,7 +498,6 @@ void render()
 		}
 
 
-
 		//Update the screen
 		SDL_RenderPresent(ren);
 }
@@ -492,19 +549,81 @@ int main( int argc, char* args[] )
 		cleanExit(1);
 	}
 
-	std::string imagePath = "./assets/BraveSec1.jpg";
-	surface = IMG_Load(imagePath.c_str());
-	if (surface == nullptr){
-		std::cout << "SDL IMG_Load Error: " << SDL_GetError() << std::endl;
-		cleanExit(1);
+	//std::string imagePath = "./assets/BraveSec1.jpg";
+	//surface = IMG_Load(imagePath.c_str());
+	//if (surface == nullptr){
+	//	std::cout << "SDL IMG_Load Error: " << SDL_GetError() << std::endl;
+	//	cleanExit(1);
+	//}
+
+	//tex = SDL_CreateTextureFromSurface(ren, surface);
+	//SDL_FreeSurface(surface);
+	//if (tex == nullptr){
+	//	std::cout << "SDL_CreateTextureFromSurface Error: " << SDL_GetError() << std::endl;
+	//	cleanExit(1);
+	//}
+
+
+	// Image loading etc. for the player sprites
+	{
+		std::string imagePath = "./assets/p1_spritesheet.png";
+		surface = IMG_Load(imagePath.c_str());
+		if (surface == nullptr) {
+			std::cout << "SDL IMG_Load Error: " << SDL_GetError() << std::endl;
+			cleanExit(1);
+		}
+
+
+
+		tex = SDL_CreateTextureFromSurface(ren, surface);
+		SDL_FreeSurface(surface);
+		if (tex == nullptr) {
+			std::cout << "SDL_CreateTextureFromSurface Error: " << SDL_GetError() << std::endl;
+			cleanExit(1);
+		}
 	}
 
-	tex = SDL_CreateTextureFromSurface(ren, surface);
-	SDL_FreeSurface(surface);
-	if (tex == nullptr){
-		std::cout << "SDL_CreateTextureFromSurface Error: " << SDL_GetError() << std::endl;
-		cleanExit(1);
+
+	// Image loading etc. for the floor sprite
+	{
+		std::string tileImagePath = "./assets/stoneMid.png";
+		surface2 = IMG_Load(tileImagePath.c_str());
+
+		tex2 = SDL_CreateTextureFromSurface(ren, surface2);
+		SDL_FreeSurface(surface2);
 	}
+
+
+	// Image loading etc. for the ladder sprite
+	{
+		std::string ladderImagePath = "./assets/ladder_mid.png";
+		surface3 = IMG_Load(ladderImagePath.c_str());
+
+		tex3 = SDL_CreateTextureFromSurface(ren, surface3);
+		SDL_FreeSurface(surface3);
+	}
+
+
+	// Image loading etc. for the egg sprite
+	{
+		std::string eggImagePath = "./assets/buttonYellow.png";
+		surface4 = IMG_Load(eggImagePath.c_str());
+
+		tex4 = SDL_CreateTextureFromSurface(ren, surface4);
+		SDL_FreeSurface(surface4);
+	}
+
+
+	// Image loading etc. for the seed sprite
+	{
+		std::string seedImagePath = "./assets/buttonBlue_pressed.png";
+		surface5 = IMG_Load(seedImagePath.c_str());
+
+		tex5 = SDL_CreateTextureFromSurface(ren, surface5);
+		SDL_FreeSurface(surface5);
+	}
+
+
 
 
 	if( TTF_Init() == -1 )
@@ -522,20 +641,24 @@ int main( int argc, char* args[] )
 	SDL_Color White = {255, 255, 255};
 	SDL_Color Yellow = { 255, 255, 0 };
 	// Messages for the Main Menu
-	messageSurface = TTF_RenderText_Solid(sans, outputText.c_str(), White); // Title 'Chuckie Egg' for the Main Menu
-	messageSurface2 = TTF_RenderText_Solid(sans, outputText2.c_str(), White); // Surface for when the 'Play Game' option when it's not selected
-	messageSurface2Select = TTF_RenderText_Solid(sans, outputText2.c_str(), Yellow); // Surface for when the 'Play Game' option is selected in the menu
-	messageSurface3 = TTF_RenderText_Solid(sans, outputText3.c_str(), White); // Surface for when the 'Options' option when it's not selected
-	messageSurface3Select = TTF_RenderText_Solid(sans, outputText3.c_str(), Yellow); // Surface for when the 'Options' option is selected in the menu
+	{
+		messageSurface = TTF_RenderText_Solid(sans, outputText.c_str(), White); // Title 'Chuckie Egg' for the Main Menu
+		messageSurface2 = TTF_RenderText_Solid(sans, outputText2.c_str(), White); // Surface for when the 'Play Game' option when it's not selected
+		messageSurface2Select = TTF_RenderText_Solid(sans, outputText2.c_str(), Yellow); // Surface for when the 'Play Game' option is selected in the menu
+		messageSurface3 = TTF_RenderText_Solid(sans, outputText3.c_str(), White); // Surface for when the 'Options' option when it's not selected
+		messageSurface3Select = TTF_RenderText_Solid(sans, outputText3.c_str(), Yellow); // Surface for when the 'Options' option is selected in the menu
+	}
 
 	// Messages for the Options Menu
-	messageSurface4 = TTF_RenderText_Solid(sans, optionText.c_str(), White);
-	messageSurface5 = TTF_RenderText_Solid(sans, optionText2.c_str(), White); // Surface for when the 'Window Size' option when it's not selected
-	messageSurface5Select = TTF_RenderText_Solid(sans, optionText2.c_str(), Yellow); // Surface for when the 'Window Size' option is selected in the menu
-	messageSurface6 = TTF_RenderText_Solid(sans, optionText3.c_str(), White); // Surface for when the 'Volume' option when it's not selected
-	messageSurface6Select = TTF_RenderText_Solid(sans, optionText3.c_str(), Yellow); // Surface for when the 'Volume' option is selected in the menu
-	messageSurface7 = TTF_RenderText_Solid(sans, optionText4.c_str(), White); // Surface for when the 'Back to Main Menu' option when it's not selected
-	messageSurface7Select = TTF_RenderText_Solid(sans, optionText4.c_str(), Yellow); // Surface for when the 'Back to Main Menu' option is selected in the menu
+	{
+		messageSurface4 = TTF_RenderText_Solid(sans, optionText.c_str(), White);
+		messageSurface5 = TTF_RenderText_Solid(sans, optionText2.c_str(), White); // Surface for when the 'Window Size' option when it's not selected
+		messageSurface5Select = TTF_RenderText_Solid(sans, optionText2.c_str(), Yellow); // Surface for when the 'Window Size' option is selected in the menu
+		messageSurface6 = TTF_RenderText_Solid(sans, optionText3.c_str(), White); // Surface for when the 'Volume' option when it's not selected
+		messageSurface6Select = TTF_RenderText_Solid(sans, optionText3.c_str(), Yellow); // Surface for when the 'Volume' option is selected in the menu
+		messageSurface7 = TTF_RenderText_Solid(sans, optionText4.c_str(), White); // Surface for when the 'Back to Main Menu' option when it's not selected
+		messageSurface7Select = TTF_RenderText_Solid(sans, optionText4.c_str(), Yellow); // Surface for when the 'Back to Main Menu' option is selected in the menu
+	}
 
 
 

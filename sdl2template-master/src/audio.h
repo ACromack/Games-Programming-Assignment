@@ -21,6 +21,8 @@ class Audio
 
 		void playSound(Mix_Chunk *playedSound);
 
+		void playMusic(Mix_Music *playedMusic);
+
 		~Audio();
 
 

@@ -14,13 +14,12 @@ private:
 	int yCoord = 150;
 	int xCoord = 150;
 
-	SDL_Renderer *ren;
-	SDL_Texture *tex;
 
 
 public:
 	spriteClass();
 
+	void spriteMovement(bool movingRight, bool movingLeft, SDL_Renderer *ren, SDL_Texture *tex, SDL_Texture *tex2, SDL_Texture *tex3, SDL_Texture *tex4);
 
 	~spriteClass();
 
