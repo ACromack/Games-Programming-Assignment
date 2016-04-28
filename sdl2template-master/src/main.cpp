@@ -93,6 +93,14 @@ SDL_Rect message_rect7; //SDL_rect for the message7 (Window Size)
 SDL_Surface *messageSurfaceLoading; // pointer to the SDL_Surface for the Loading Screen message
 SDL_Texture *messageTextureLoading; // pointer to the SDL_Texture for the Loading Screen message
 
+// Player 1 Score Text
+SDL_Surface *messageSurfaceP1Score; // pointer to the SDL_Surface for player 1's score message
+SDL_Texture *messageTextureP1Score; // pointer to the SDL_Texture for player 1's score message
+
+// Player 2 Score Text
+SDL_Surface *messageSurfaceP2Score; // pointer to the SDL_Surface for player 2's score message
+SDL_Texture *messageTextureP2Score; // pointer to the SDL_Texture for player 2's score message
+
 
 std::string outputText = "Chuckie Egg"; //Output string for the title
 std::string outputText2 = "Play Game"; //Ouput string for the 'Play Game' menu option
@@ -105,8 +113,6 @@ std::string optionText4 = "Return to Main Menu"; //Return to main menu text for 
 
 std::string loadingText = "Loading..."; // Text for the loading screen upon selecting 'Play Game'
 
-std::string player1ScoreText = "P1: "; // Text for player 1's score
-std::string player2ScoreText = "P2: "; // Text for player 2's score
 
 int menuItemSelect = 1; // 1 == Play Game, 2 == Options
 int optionMenuItemSelect = 0; // 1 == Window Size, 2 == Volume, 3 == Return to Main Menu
@@ -119,21 +125,25 @@ int loadWait = 200;
 int player1Score = 0;
 int player2Score = 0;
 
+std::string player1ScoreText = "P1: " + std::to_string(player1Score); // Text for player 1's score
+std::string player2ScoreText = "P2: " + std::to_string(player2Score); // Text for player 2's score
+
 bool movingUp = false; // Is the player moving up? (ladder)
+bool movingDown = false; // Is the player moving down? (ladder)
 bool movingRight = false; // Is the player moving right?
 bool movingLeft = false; // Is the player moving left?
 bool p2MoveRight = false; // Is the second player moving right?
 bool p2MoveLeft = false; // Is the second player moving left?
+bool p2MoveUp = false; // Is the second player moving up? (ladder)
+bool p2MoveDown = false; // Is the second player moving down? (ladder)
 
 
 // Music that will be played
-Mix_Music *gMusic = NULL;
+Mix_Music *gameMusic = NULL;
 
-//SFX that will be used
-Mix_Chunk *gScratch = NULL;
-Mix_Chunk *gHigh = NULL;
-Mix_Chunk *gMedium = NULL;
-Mix_Chunk *gLow = NULL;
+//Sound Effects that will be used
+Mix_Chunk *soundEffect = NULL;
+
 
 bool done = false;
 
@@ -183,61 +193,6 @@ void handleInput()
 					break;
 
 
-					////Start of code for handling user input and testing audio stuff
-					//
-					//
-					//// Press the 't' key to start playing music
-					//case SDLK_t:
-					//	if (Mix_PlayingMusic() == 0)
-					//	{
-					//		Mix_PlayMusic(gMusic, -1);
-					//	}
-					//	break;
-					//
-					//// Press the 'y' to pause the music (if already playing) and resume music (is currently paused)
-					//case SDLK_y:
-					//	if (Mix_PlayingMusic() == 1)
-					//	{
-					//
-					//		if (Mix_PausedMusic() == 0)
-					//		{
-					//			Mix_PauseMusic();
-					//		}
-					//		else
-					//		{
-					//			Mix_ResumeMusic();
-					//		}
-					//		
-					//	}
-					//	break;
-					//
-					//
-					//// Press the 'b' key to play the sound effect of the 'gHigh' chunk
-					//case SDLK_b:
-					//	Mix_PlayChannel(-1, gHigh, -1);
-					//	break;
-					//
-					//// Press the 'n' key to change the volume of the 'gHigh' chunck to be 12
-					//case SDLK_n:
-					//	Mix_VolumeChunk(gHigh, 12);
-					//	break;
-					//
-					//// Press the 'm' key to change the volume of the 'gHigh' chunck to be 128
-					//case SDLK_m:
-					//	Mix_VolumeChunk(gHigh, 128);
-					//	break;
-					//
-					//// Press the 'f' key to play the 'gHigh' chunk on repeat with a fade in of 1500 ms
-					//case SDLK_f:
-					//	Mix_FadeInChannel(-1, gHigh, -1, 1500);
-					//	break;
-					//
-					//// Press the 'd' key to fade out the next occupied channel over 1500 ms
-					//case SDLK_d:
-					//	Mix_FadeOutChannel(-1, 1500);
-					//	break;
-					//
-					////End of code regarding user input and audio stuff 
 
 				// Keypress case for 's' in the different game scenes
 				case SDLK_s:
@@ -304,20 +259,10 @@ void handleInput()
 						optionMenuItemSelect = 1;
 						menuItemSelect = 1;
 					}
-					audTest.playSound(gHigh);
-					break;
-
-				// Testing for changing the window's size
-				case SDLK_t:
-					SDL_SetWindowSize(win, 1024, 576);
+					audTest.playSound(soundEffect);
 					break;
 
 
-					// Testing for different classes
-				case SDLK_r:
-					audTest.playSound(gHigh);
-					spriteClass();
-					break;
 
 				}
 			else
@@ -327,13 +272,13 @@ void handleInput()
 					// Player 1 Right Movement
 				case SDLK_d:
 					movingRight = true;
-					sprTest.spritePlayerRight(5);
+					sprTest.spritePlayerRight(10);
 					break;
 
 					// Player 1 Left Movement
 				case SDLK_a:
 					movingLeft = true;
-					sprTest.spritePlayerRight(-5);
+					sprTest.spritePlayerRight(-10);
 					break;
 
 					// Player 1 Up Movement
@@ -341,16 +286,31 @@ void handleInput()
 					movingUp = true;
 					break;
 
+					// Player 1 Down Movement
+				case SDLK_s:
+					movingDown = true;
+					break;
+
 					// Player 2 Right Movement
 				case SDLK_RIGHT:
 					p2MoveRight = true;
-					sprTest.spritePlayer2Move(5);
+					sprTest.spritePlayer2Move(10);
 					break;
 
 					// Player 2 Left Movement
 				case SDLK_LEFT:
 					p2MoveLeft = true;
-					sprTest.spritePlayer2Move(-5);
+					sprTest.spritePlayer2Move(-10);
+					break;
+
+					// Player 2 Up Movement
+				case SDLK_UP:
+					p2MoveUp = true;
+					break;
+
+					// Player 2 Down Movement
+				case SDLK_DOWN:
+					p2MoveDown = true;
 					break;
 
 				}
@@ -377,14 +337,29 @@ void handleInput()
 				movingUp = false;
 				break;
 
-				// Player 2 Right Movement
+				// Player 1 Down Movement Stop
+			case SDLK_s:
+				movingDown = false;
+				break;
+
+				// Player 2 Right Movement Stop
 			case SDLK_RIGHT:
 				p2MoveRight = false;
 				break;
 
-				// Player 2 Left Movement
+				// Player 2 Left Movement Stop
 			case SDLK_LEFT:
 				p2MoveLeft = false;
+				break;
+
+				// Player 2 Up Movement Stop
+			case SDLK_UP:
+				p2MoveUp = false;
+				break;
+
+				// Player 2 Down Movement Stop
+			case SDLK_DOWN:
+				p2MoveDown = false;
 				break;
 
 			}
@@ -394,11 +369,13 @@ void handleInput()
 }
 // end::handleInput[]
 
+
 // tag::updateSimulation[]
 void updateSimulation(double simLength = 0.02) //update simulation with an amount of time to simulate for (in seconds)
 {
   //CHANGE ME
 }
+
 
 void render()
 {
@@ -477,10 +454,35 @@ void render()
 			else
 			{
 				// Use the audio class to start playing music when the game starts
-				audTest.playMusic(gMusic);
+				audTest.playMusic(gameMusic);
 
 				// Use the sprite class to start moving sprites
-				sprTest.spriteMovement(movingRight, movingLeft, movingUp, p2MoveRight, p2MoveLeft, ren, tex, tex2, tex3, tex4, tex5, enemyTex, player2Tex);
+				sprTest.spriteMovement(movingRight, movingLeft, movingUp, movingDown, p2MoveRight, p2MoveLeft, p2MoveUp, p2MoveDown, ren, tex, tex2, tex3, tex4, tex5, enemyTex, player2Tex, soundEffect);
+
+				// Code for player 1 score
+				SDL_Rect message_rectP1Score;
+				messageTextureP1Score = SDL_CreateTextureFromSurface(ren, messageSurfaceP1Score);
+				message_rectP1Score.x = 0;
+				message_rectP1Score.y = 0;
+				message_rectP1Score.w = 200;
+				message_rectP1Score.h = 50;
+
+				//Draw the text
+				SDL_RenderCopy(ren, messageTextureP1Score, NULL, &message_rectP1Score);
+
+
+				// Code for player 2 score
+				SDL_Rect message_rectP2Score;
+				messageTextureP2Score = SDL_CreateTextureFromSurface(ren, messageSurfaceP2Score);
+				message_rectP2Score.x = 1080;
+				message_rectP2Score.y = 0;
+				message_rectP2Score.w = 200;
+				message_rectP2Score.h = 50;
+
+				//Draw the text
+				SDL_RenderCopy(ren, messageTextureP2Score, NULL, &message_rectP2Score);
+
+				
 			}
 
 		}
@@ -580,8 +582,8 @@ void cleanExit(int returnValue)
 	if (ren != nullptr) SDL_DestroyRenderer(ren);
 	if (win != nullptr) SDL_DestroyWindow(win);
 	// SDL_mixer start
-	Mix_FreeMusic(gMusic);
-	gMusic = NULL;
+	Mix_FreeMusic(gameMusic);
+	gameMusic = NULL;
 	// SDL_mixer end
 	SDL_Quit();
 	exit(returnValue);
@@ -736,6 +738,8 @@ int main( int argc, char* args[] )
 	// Message for the Loading Screen
 	messageSurfaceLoading = TTF_RenderText_Solid(sans, loadingText.c_str(), White);
 
+	
+
 
 	// error handling for audio
 	if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0)
@@ -744,15 +748,16 @@ int main( int argc, char* args[] )
 		cleanExit(1);
 	}
 
-	gMusic = Mix_LoadMUS("./assets/gameMusic.wav");
-	if (!gMusic)
+	gameMusic = Mix_LoadMUS("./assets/gameMusic.wav");
+	if (!gameMusic)
 	{
-		printf("Gone done goofed on gMusic");
+		printf("Gone done goofed on gameMusic");
 		//ERROR
 	}
 
-	gHigh = Mix_LoadWAV("./assets/musicSFX/high.wav");
-	if(!gHigh)
+	// Load in the sound effect used
+	soundEffect = Mix_LoadWAV("./assets/musicSFX/high.wav");
+	if(!soundEffect)
 	{
 		printf("Loading the High wav has failed"); //Error message in-case the loading in of the 'High' wav file fails
 	}
@@ -761,27 +766,27 @@ int main( int argc, char* args[] )
 
 	while (!done) //loop until done flag is set)
 	{
+		player1ScoreText = "P1: " + std::to_string(player1Score); // Update the player 1 score string to account for any score changes
+		player2ScoreText = "P2: " + std::to_string(player2Score); // Update the player 2 score string to account for any score changes
+
 		handleInput(); // this should ONLY SET VARIABLES
 
 		updateSimulation(); // this should ONLY SET VARIABLES according to simulation
 
-		//currentTime = SDL_GetTicks();
-		//auto t1 = Clock::now();
+
 		messageSurface5 = TTF_RenderText_Solid(sans, optionText2.c_str(), White); // Surface for when the 'Window Size' option when it's not selected
 		messageSurface5Select = TTF_RenderText_Solid(sans, optionText2.c_str(), Yellow);
 
+		// Update message for Player 1's Score
+		messageSurfaceP1Score = TTF_RenderText_Solid(sans, player1ScoreText.c_str(), White);
+
+		// Update message for Player 2's Score
+		messageSurfaceP2Score = TTF_RenderText_Solid(sans, player2ScoreText.c_str(), White);
+
 		render(); // this should render the world state according to VARIABLES
 
-		//render2();
-
-		//lastTime = SDL_GetTicks();
-		//auto t2 = Clock::now();
-		//std::cout << "Delta t2-t1: "
-		//	<< std::chrono::duration_cast<std::chrono::nanoseconds>(t2 - t1).count()
-		//	<< " nanoseconds" << std::endl;
-
-		//currentTime = lastTime - currentTime;
-		//std::cout << currentTime << std::endl;
+		player1Score = sprTest.player1ScoreChange(); // Update the value of player 1's score
+		player2Score = sprTest.player2ScoreChange(); // Update the value of player 2's score
 
 		SDL_Delay(20); // unless vsync is on??
 	}

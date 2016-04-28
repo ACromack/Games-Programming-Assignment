@@ -1,6 +1,8 @@
 // C++ File for the sprite class
 #include "sprite.h"
+#include "audio.h"
 #include <iostream>
+#include <SDL_mixer.h>
 
 spriteClass::spriteClass()
 {
@@ -13,7 +15,7 @@ void spriteClass::spritePlayerRight(int moveRightSpeed)
 	xCoord = xCoord + moveRightSpeed;
 }
 
-void spriteClass::spriteMovement(bool movingRight, bool movingLeft, bool movingUp, bool p2MoveRight, bool p2MoveLeft, SDL_Renderer *ren, SDL_Texture *tex, SDL_Texture *tex2, SDL_Texture *tex3, SDL_Texture *tex4, SDL_Texture *tex5, SDL_Texture *enemyTex, SDL_Texture *player2Tex)
+void spriteClass::spriteMovement(bool movingRight, bool movingLeft, bool movingUp, bool movingDown, bool p2MoveRight, bool p2MoveLeft, bool p2MoveUp, bool p2MoveDown, SDL_Renderer *ren, SDL_Texture *tex, SDL_Texture *tex2, SDL_Texture *tex3, SDL_Texture *tex4, SDL_Texture *tex5, SDL_Texture *enemyTex, SDL_Texture *player2Tex, Mix_Chunk *playSFX)
 {
 
 
@@ -205,12 +207,29 @@ void spriteClass::spriteMovement(bool movingRight, bool movingLeft, bool movingU
 		texture_rectEgg2.h = 50;
 
 		SDL_RenderCopy(ren, tex4, &sprite_rect4, &texture_rectEgg2);
+
+		// Egg 3
+		SDL_Rect texture_rectEgg3;
+		texture_rectEgg3.x = 200;
+		texture_rectEgg3.y = 630;
+		texture_rectEgg3.w = 50;
+		texture_rectEgg3.h = 50;
 	
+		SDL_RenderCopy(ren, tex4, &sprite_rect4, &texture_rectEgg3);
+
+		// Egg 4
+		SDL_Rect texture_rectEgg4;
+		texture_rectEgg4.x = 220;
+		texture_rectEgg4.y = 150;
+		texture_rectEgg4.w = 50;
+		texture_rectEgg4.h = 50;
+
+		SDL_RenderCopy(ren, tex4, &sprite_rect4, &texture_rectEgg4);
+
 
 
 	// Code relating to enemies
-	{
-		switch (spriteFrame)
+		switch (spriteFrame2)
 		{
 		case 0:
 			spriteX = 0;
@@ -282,46 +301,30 @@ void spriteClass::spriteMovement(bool movingRight, bool movingLeft, bool movingU
 		sprite_rectEnemy.w = 72;
 		sprite_rectEnemy.h = 97;
 
-		if (movingRight == true && movingLeft == false)
-		{
-			// Collision Detection for when the player hits the right wall, followed by left wall detection
-			if (xCoord + 72 < 1280)
+
+			// Collision Detection for when the enemy hits the ends of their platform
+			if (xCoordE1 > 101)
 			{
-				SDL_RenderCopy(ren, enemyTex, &sprite_rectEnemy, &texture_rectEnemy);
-				spriteFrame2++;
-			}
-			else
-			{
-				movingRight = false;
-				xCoord = 1280 - 72;
-				spriteFrame2 = 1;
-				SDL_RenderCopy(ren, enemyTex, &sprite_rectEnemy, &texture_rectEnemy);
+				if (xCoordE1 > 1080 - 72)
+				{
+					enemyRight = false;
+					xCoordE1 -= 5;
+					SDL_RenderCopy(ren, enemyTex, &sprite_rectEnemy, &texture_rectEnemy);
+					spriteFrame2++;
+					if (xCoordE1 = 102)
+					{
+						enemyRight = true;
+					}
+				}
+				else if (enemyRight == true)
+				{
+					xCoordE1 += 5;
+					SDL_RenderCopy(ren, enemyTex, &sprite_rectEnemy, &texture_rectEnemy);
+					spriteFrame2++;
+				}
+				
 			}
 
-		}
-		else if (movingLeft == true && movingRight == false)
-		{
-			if (xCoord > 0)
-			{
-				SDL_RenderCopy(ren, enemyTex, &sprite_rectEnemy, &texture_rectEnemy);
-				spriteFrame2++;
-				movingLeft = false;
-			}
-			else
-			{
-				movingLeft = false;
-				xCoord = 0.1;
-				spriteFrame2 = 1;
-				SDL_RenderCopy(ren, enemyTex, &sprite_rectEnemy, &texture_rectEnemy);
-			}
-		}
-		else
-		{
-			// When the player is stood still, display this one sprite
-			spriteFrame = 1;
-			SDL_RenderCopy(ren, enemyTex, &sprite_rectEnemy, &texture_rectEnemy);
-		}
-	}
 
 
 	//Draw the texture (player sprite)
@@ -436,12 +439,47 @@ void spriteClass::spriteMovement(bool movingRight, bool movingLeft, bool movingU
 			SDL_RenderCopy(ren, tex, &sprite_rect, &texture_rect);
 		}
 
-		if (texture_rect.x == texture_rectEgg2.x && texture_rect.y + 45 == texture_rectEgg2.y)
-		{
-			std::cout << "Score!" << std::endl;
-		}
-	
 
+		// Player 1 collision with egg 1
+		if (texture_rect.x == texture_rect4.x && texture_rect.y + 45 == texture_rect4.y && egg1Done == false)
+		{
+			p1ScoreValue += 100;
+			std::cout << "Score!" << std::endl;
+			egg1Done = true;
+			soundFX.playSound(playSFX);
+		}
+
+		// Player 1 collision with egg 2
+		if (texture_rect.x == texture_rectEgg2.x && texture_rect.y + 45 == texture_rectEgg2.y && egg2Done == false)
+		{
+			p1ScoreValue += 100;
+			std::cout << "Score!" << std::endl;
+			egg2Done = true;
+			soundFX.playSound(playSFX);
+		}
+
+		// Player 1 collision with egg 3
+		if (texture_rect.x == texture_rectEgg3.x && texture_rect.y + 45 == texture_rectEgg3.y && egg3Done == false)
+		{
+			p1ScoreValue += 100;
+			std::cout << "Score!" << std::endl;
+			egg3Done = true;
+			soundFX.playSound(playSFX);
+		}
+
+		// Player 1 collision with egg 4
+		if (texture_rect.x == texture_rectEgg4.x && texture_rect.y + 45 == texture_rectEgg4.y && egg4Done == false)
+		{
+			p1ScoreValue += 100;
+			std::cout << "Score!" << std::endl;
+			egg4Done = true;
+			soundFX.playSound(playSFX);
+		}
+
+
+
+	
+		// Code relating to player 1's collision with ladders going up
 		if (texture_rect.x >= texture_rect3.x && texture_rect.x <= texture_rect3.x + 40 && texture_rect.y > texture_rect3.y - 25 && movingUp == true)
 		{
 			yCoord = yCoord - 5;
@@ -455,9 +493,32 @@ void spriteClass::spriteMovement(bool movingRight, bool movingLeft, bool movingU
 			yCoord = yCoord - 5;
 		}
 
+		// Code relating to player 1's collision with ladders going down
+		if (texture_rect.x >= texture_rect3.x && texture_rect.x <= texture_rect3.x + 40 && texture_rect.y > texture_rect3.y && movingDown == true)
+		{
+			yCoord = yCoord + 5;
+		}
+		else if (texture_rect.x >= texture_rect3a.x && texture_rect.x <= texture_rect3a.x + 40 && texture_rect.y > texture_rect3a.y && movingDown == true)
+		{
+			yCoord = yCoord + 5;
+		}
+		else if (texture_rect.x >= texture_rect3b.x && texture_rect.x <= texture_rect3b.x + 40 && texture_rect.y > texture_rect3b.y && movingDown == true)
+		{
+			yCoord = yCoord + 5;
+		}
+
+
+		// Code relating to player 1's collision with the enemy
+		if (texture_rect.x == texture_rectEnemy.x && texture_rect.y >= texture_rectEnemy.y + 200)
+		{
+			p1ScoreValue -= 100;
+			std::cout << "P1 Hit Enemy!" << std::endl;
+			soundFX.playSound(playSFX);
+		}
+
+
 
 	// Code relating to drawing player 2's sprite
-	{
 		switch (spriteFrameP2)
 		{
 		case 0:
@@ -569,20 +630,100 @@ void spriteClass::spriteMovement(bool movingRight, bool movingLeft, bool movingU
 		}
 
 
-	}
+		// Player 2 collision with egg 1
+		if (texture_rectP2.x == texture_rect4.x && texture_rectP2.y + 45 == texture_rect4.y && egg1Done == false)
+		{
+			p2ScoreValue += 100;
+			std::cout << "Score P2!" << std::endl;
+			egg1Done = true;
+			soundFX.playSound(playSFX);
+		}
 
+		// Player 2 collision with egg 2
+		if (texture_rectP2.x == texture_rectEgg2.x && texture_rectP2.y + 45 == texture_rectEgg2.y && egg2Done == false)
+		{
+			p2ScoreValue += 100;
+			std::cout << "Score P2!" << std::endl;
+			egg2Done = true;
+			soundFX.playSound(playSFX);
+		}
+
+		// Player 2 collision with egg 3
+		if (texture_rectP2.x == texture_rectEgg3.x && texture_rectP2.y + 45 == texture_rectEgg3.y && egg3Done == false)
+		{
+			p2ScoreValue += 100;
+			std::cout << "Score P2!" << std::endl;
+			egg3Done = true;
+			soundFX.playSound(playSFX);
+		}
+
+		// Player 2 collision with egg 4
+		if (texture_rectP2.x == texture_rectEgg4.x && texture_rectP2.y + 45 == texture_rectEgg4.y && egg4Done == false)
+		{
+			p2ScoreValue += 100;
+			std::cout << "Score P2!" << std::endl;
+			egg4Done = true;
+			soundFX.playSound(playSFX);
+		}
+
+		// Code relating to player 2's collision with ladders going up
+		if (texture_rectP2.x >= texture_rect3.x && texture_rectP2.x <= texture_rect3.x + 40 && texture_rectP2.y > texture_rect3.y - 25 && p2MoveUp == true)
+		{
+			yCoordP2 = yCoordP2 - 5;
+		}
+		else if (texture_rectP2.x >= texture_rect3a.x && texture_rectP2.x <= texture_rect3a.x + 40 && texture_rectP2.y > texture_rect3a.y - 25 && p2MoveUp == true)
+		{
+			yCoordP2 = yCoordP2 - 5;
+		}
+		else if (texture_rectP2.x >= texture_rect3b.x && texture_rectP2.x <= texture_rect3b.x + 40 && texture_rectP2.y > texture_rect3b.y && p2MoveUp == true)
+		{
+			yCoordP2 = yCoordP2 - 5;
+		}
+
+		// Code relating to player 2's collision with ladders going down
+		if (texture_rectP2.x >= texture_rect3.x && texture_rectP2.x <= texture_rect3.x + 40 && texture_rectP2.y > texture_rect3.y && p2MoveDown == true)
+		{
+			yCoordP2 = yCoordP2 + 5;
+		}
+		else if (texture_rectP2.x >= texture_rect3a.x && texture_rectP2.x <= texture_rect3a.x + 40 && texture_rectP2.y > texture_rect3a.y && p2MoveDown == true)
+		{
+			yCoordP2 = yCoordP2 + 5;
+		}
+		else if (texture_rectP2.x >= texture_rect3b.x && texture_rectP2.x <= texture_rect3b.x + 40 && texture_rectP2.y > texture_rect3b.y && p2MoveDown == true)
+		{
+			yCoordP2 = yCoordP2 + 5;
+		}
+
+
+		// Code relating to player 2's collision with the enemy
+		if (texture_rectP2.x == texture_rectEnemy.x && texture_rectP2.y + 45 == texture_rectEnemy.y)
+		{
+			p2ScoreValue -= 100;
+			std::cout << "P2 Hit Enemy!" << std::endl;
+			soundFX.playSound(playSFX);
+		}
 
 }
 
-void spriteClass::playerWallCollision()
-{
 
-}
 
 // Method to move player 2's sprite (+ve value passed moves right, -ve value passed moves left)
 void spriteClass::spritePlayer2Move(int moveRightSpeedP2)
 {
 	xCoordP2 = xCoordP2 + moveRightSpeedP2;
+}
+
+
+// Method for changing player 1's score
+int spriteClass::player1ScoreChange()
+{
+	return p1ScoreValue;
+}
+
+// Method for changing player 2's score
+int spriteClass::player2ScoreChange()
+{
+	return p2ScoreValue;
 }
 
 spriteClass::~spriteClass()
